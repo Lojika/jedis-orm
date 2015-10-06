@@ -24,7 +24,7 @@ import redis.clients.jedis.JedisPool;
  */
 public class JedisDaoWithModelAndStringKeyTest extends BaseTest {
 
-    private ModelDao modelDao;
+    private final ModelDao modelDao;
 
     public JedisDaoWithModelAndStringKeyTest() {
         this.modelDao = new ModelDao() {

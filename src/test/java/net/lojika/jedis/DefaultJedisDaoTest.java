@@ -22,7 +22,7 @@ import redis.clients.jedis.JedisPool;
  */
 public class DefaultJedisDaoTest extends BaseTest {
 
-    private SampleDao sampleDao;
+    private final SampleDao sampleDao;
 
     public DefaultJedisDaoTest() {
         this.sampleDao = new SampleDao() {
