@@ -23,5 +23,5 @@ public interface JedisDao<K extends Object, T extends Object> {
 
     void delete(K key);
 
-    void expireAll();
+    void deleteAll();
 }

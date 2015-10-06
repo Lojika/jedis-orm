@@ -79,7 +79,7 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
     }
 
     @Override
-    public void expireAll() {
+    public void deleteAll() {
         if (modelName == null) {
             return;
         }
