@@ -22,20 +22,20 @@ import redis.clients.jedis.JedisPool;
  *
  * @author bamasyali
  */
-public class JedisDaoWithModelAndStringKeyTest extends BaseTest {
+public class JSONModelTest extends BaseTest {
 
     private final ModelDao modelDao;
 
-    public JedisDaoWithModelAndStringKeyTest() {
+    public JSONModelTest() {
         this.modelDao = new ModelDao() {
             @Override
             protected JedisPool getJedisPool() {
-                return JedisDaoWithModelAndStringKeyTest.this.getJedisPool();
+                return JSONModelTest.this.getJedisPool();
             }
 
             @Override
             protected ObjectMapper getObjectMapper() {
-                return JedisDaoWithModelAndStringKeyTest.this.getObjectMapper();
+                return JSONModelTest.this.getObjectMapper();
             }
         };
     }

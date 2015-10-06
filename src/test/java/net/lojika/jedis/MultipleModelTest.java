@@ -23,33 +23,33 @@ import redis.clients.jedis.JedisPool;
  *
  * @author bamasyali
  */
-public class MultipleJedisDaoTest extends BaseTest {
+public class MultipleModelTest extends BaseTest {
 
     private final SampleDao sampleDao;
     private final ModelDao modelDao;
 
-    public MultipleJedisDaoTest() {
+    public MultipleModelTest() {
         this.sampleDao = new SampleDao() {
 
             @Override
             protected JedisPool getJedisPool() {
-                return MultipleJedisDaoTest.this.getJedisPool();
+                return MultipleModelTest.this.getJedisPool();
             }
 
             @Override
             protected ObjectMapper getObjectMapper() {
-                return MultipleJedisDaoTest.this.getObjectMapper();
+                return MultipleModelTest.this.getObjectMapper();
             }
         };
         this.modelDao = new ModelDao() {
             @Override
             protected JedisPool getJedisPool() {
-                return MultipleJedisDaoTest.this.getJedisPool();
+                return MultipleModelTest.this.getJedisPool();
             }
 
             @Override
             protected ObjectMapper getObjectMapper() {
-                return MultipleJedisDaoTest.this.getObjectMapper();
+                return MultipleModelTest.this.getObjectMapper();
             }
         };
     }

@@ -21,7 +21,7 @@ import redis.clients.jedis.JedisPool;
  * @param <K>
  * @param <T>
  */
-public abstract class AbstactJedisDao<K extends Object, T extends Object> implements JedisDao<K, T> {
+public abstract class AbstractJedisDao<K extends Object, T extends Object> implements JedisDao<K, T> {
 
     protected abstract JedisPool getJedisPool();
 
@@ -30,8 +30,9 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
     private final Class<T> modelClass;
     private final String modelName;
 
-    public AbstactJedisDao(Class<T> modelClass) {
+    public AbstractJedisDao(Class<T> modelClass) {
         this.modelClass = modelClass;
+
         JedisModel jedisModel = modelClass.getAnnotation(JedisModel.class);
 
         if (jedisModel == null && !modelClass.equals(String.class)) {
@@ -46,7 +47,7 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
         return modelName == null ? _key : String.format("%s.%s", modelName, _key);
     }
 
-    protected T convert(String value) throws JedisException {
+    protected T convertStringToModel(String value) throws JedisException {
         if (value == null || value.isEmpty()) {
             return null;
         }
@@ -57,12 +58,11 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
         }
     }
 
-    protected String convert(T value) throws JedisException {
+    protected String convertModelToString(T value) throws JedisException {
         if (value == null) {
             return null;
         }
         try {
-
             return getObjectMapper().writer().writeValueAsString(value);
         } catch (JsonProcessingException ex) {
             throw new JedisException(ex);
@@ -79,7 +79,7 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
         try (Jedis jedis = getJedisPool().getResource()) {
             value = jedis.get(keyToString(key));
         }
-        return convert(value);
+        return convertStringToModel(value);
     }
 
     @Override
@@ -88,7 +88,7 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
             return;
         }
         try (Jedis jedis = getJedisPool().getResource()) {
-            jedis.set(keyToString(key), convert(value));
+            jedis.set(keyToString(key), convertModelToString(value));
         }
     }
 
@@ -99,7 +99,7 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
         }
         String _key = keyToString(key);
         try (Jedis jedis = getJedisPool().getResource()) {
-            jedis.set(_key, convert(value));
+            jedis.set(_key, convertModelToString(value));
             jedis.expire(_key, expireInSeconds);
         }
     }

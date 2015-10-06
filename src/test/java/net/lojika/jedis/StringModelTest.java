@@ -20,21 +20,21 @@ import redis.clients.jedis.JedisPool;
  *
  * @author bamasyali
  */
-public class DefaultJedisDaoTest extends BaseTest {
+public class StringModelTest extends BaseTest {
 
     private final SampleDao sampleDao;
 
-    public DefaultJedisDaoTest() {
+    public StringModelTest() {
         this.sampleDao = new SampleDao() {
 
             @Override
             protected JedisPool getJedisPool() {
-                return DefaultJedisDaoTest.this.getJedisPool();
+                return StringModelTest.this.getJedisPool();
             }
 
             @Override
             protected ObjectMapper getObjectMapper() {
-                return DefaultJedisDaoTest.this.getObjectMapper();
+                return StringModelTest.this.getObjectMapper();
             }
         };
     }

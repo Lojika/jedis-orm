@@ -5,15 +5,16 @@
  */
 package net.lojika.jedis.dao;
 
-import net.lojika.jedis.dao.impl.DefaultJedisDaoImpl;
+import net.lojika.jedis.dao.impl.AbstractJedisDao;
 
 /**
  *
  * @author bamasyali
  */
-public abstract class SampleDao extends DefaultJedisDaoImpl {
+public abstract class SampleDao extends AbstractJedisDao<String, String> {
 
     public SampleDao() {
+        super(String.class);
     }
 
 }

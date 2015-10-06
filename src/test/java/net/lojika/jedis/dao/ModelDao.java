@@ -5,14 +5,14 @@
  */
 package net.lojika.jedis.dao;
 
-import net.lojika.jedis.dao.impl.AbstactJedisDao;
+import net.lojika.jedis.dao.impl.AbstractJedisDao;
 import net.lojika.jedis.model.Model;
 
 /**
  *
  * @author bamasyali
  */
-public abstract class ModelDao extends AbstactJedisDao<String, Model> {
+public abstract class ModelDao extends AbstractJedisDao<String, Model> {
 
     public ModelDao() {
         super(Model.class);
