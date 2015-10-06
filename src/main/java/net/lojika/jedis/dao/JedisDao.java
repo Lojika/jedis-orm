@@ -9,7 +9,7 @@ import net.lojika.jedis.exception.JedisException;
 
 /**
  *
- * @author cancobanoglu
+ * @author Burak Amasyalı
  * @param <K>
  * @param <T>
  */

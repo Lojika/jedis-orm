@@ -7,7 +7,7 @@ package net.lojika.jedis.dao;
 
 /**
  *
- * @author cancobanoglu
+ * @author Burak Amasyalı
  * @param <K>
  * @param <T>
  */

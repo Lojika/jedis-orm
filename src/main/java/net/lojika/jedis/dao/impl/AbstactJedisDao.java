@@ -17,7 +17,7 @@ import redis.clients.jedis.JedisPool;
 
 /**
  *
- * @author cancobanoglu
+ * @author Burak Amasyalı
  * @param <K>
  * @param <T>
  */
