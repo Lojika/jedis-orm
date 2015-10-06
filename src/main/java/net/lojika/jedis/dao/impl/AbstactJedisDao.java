@@ -5,6 +5,9 @@
  */
 package net.lojika.jedis.dao.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.Set;
 import net.lojika.jedis.dao.JedisDao;
 import net.lojika.jedis.exception.JedisException;
@@ -22,15 +25,13 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
 
     protected abstract JedisPool getJedisPool();
 
-    protected abstract String convertKeyToString(K key);
+    protected abstract ObjectMapper getObjectMapper();
 
-    protected abstract T convert(String value) throws JedisException;
-
-    protected abstract String convert(T value) throws JedisException;
-
+    private final Class<T> modelClass;
     private final String modelName;
 
     public AbstactJedisDao(Class<T> modelClass) {
+        this.modelClass = modelClass;
         JedisModel jedisModel = modelClass.getAnnotation(JedisModel.class);
         modelName = jedisModel == null ? null : jedisModel.name();
     }
@@ -38,6 +39,33 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
     private String keyToString(K key) {
         String _key = convertKeyToString(key);
         return modelName == null ? _key : String.format("%s.%s", modelName, _key);
+    }
+
+    protected T convert(String value) throws JedisException {
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+        try {
+            return getObjectMapper().readValue(value, modelClass);
+        } catch (IOException ex) {
+            throw new JedisException(ex);
+        }
+    }
+
+    protected String convert(T value) throws JedisException {
+        if (value == null) {
+            return null;
+        }
+        try {
+
+            return getObjectMapper().writer().writeValueAsString(value);
+        } catch (JsonProcessingException ex) {
+            throw new JedisException(ex);
+        }
+    }
+
+    protected String convertKeyToString(K key) {
+        return key.toString();
     }
 
     @Override

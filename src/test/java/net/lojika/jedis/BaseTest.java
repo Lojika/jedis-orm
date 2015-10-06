@@ -5,6 +5,7 @@
  */
 package net.lojika.jedis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fiftyonred.mock_jedis.MockJedisPool;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -16,6 +17,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class BaseTest {
 
     private static final JedisPool JEDIS_POOL;
+    private static final ObjectMapper OBJECT_MAPPER;
 
     static {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
@@ -26,10 +28,16 @@ public class BaseTest {
         poolConfig.setBlockWhenExhausted(false);
 
         JEDIS_POOL = new MockJedisPool(poolConfig, "localhost");
+
+        OBJECT_MAPPER = new ObjectMapper();
     }
 
-    public static JedisPool getJedisPool() {
+    public JedisPool getJedisPool() {
         return JEDIS_POOL;
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return OBJECT_MAPPER;
     }
 
 }

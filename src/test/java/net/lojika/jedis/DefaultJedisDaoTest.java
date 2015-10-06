@@ -5,6 +5,7 @@ package net.lojika.jedis;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.lojika.jedis.dao.impl.DefaultJedisDaoImpl;
 import net.lojika.jedis.exception.JedisException;
 import org.junit.After;
@@ -109,7 +110,12 @@ public class DefaultJedisDaoTest extends BaseTest {
 
         @Override
         protected JedisPool getJedisPool() {
-            return BaseTest.getJedisPool();
+            return DefaultJedisDaoTest.this.getJedisPool();
+        }
+
+        @Override
+        protected ObjectMapper getObjectMapper() {
+            return DefaultJedisDaoTest.this.getObjectMapper();
         }
 
     }
