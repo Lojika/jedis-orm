@@ -12,7 +12,7 @@ import net.lojika.jedis.model.JSONModel;
  *
  * @author bamasyali
  */
-public abstract class JSONModelDao extends AbstractJedisDao<String, JSONModel> {
+public abstract class JSONModelDao extends AbstractJedisDao< JSONModel> {
 
     public JSONModelDao() {
         super(JSONModel.class);

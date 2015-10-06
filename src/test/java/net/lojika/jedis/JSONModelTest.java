@@ -53,7 +53,7 @@ public class JSONModelTest extends BaseTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws JedisException {
         modelDao.deleteAll();
     }
 

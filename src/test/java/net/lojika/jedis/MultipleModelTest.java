@@ -158,10 +158,6 @@ public class MultipleModelTest extends BaseTest {
             sampleDao.put(key, value);
 
             assertEquals(value, sampleDao.get(key));
-
-            sampleDao.deleteAll();
-
-            assertNotNull(sampleDao.get(key));
         }
 
         {

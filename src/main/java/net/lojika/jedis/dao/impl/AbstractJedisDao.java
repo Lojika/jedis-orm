@@ -8,6 +8,9 @@ package net.lojika.jedis.dao.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import net.lojika.jedis.dao.JedisDao;
 import net.lojika.jedis.exception.JedisException;
@@ -18,10 +21,9 @@ import redis.clients.jedis.JedisPool;
 /**
  *
  * @author Burak Amasyalı
- * @param <K>
  * @param <T>
  */
-public abstract class AbstractJedisDao<K extends Object, T extends Object> implements JedisDao<K, T> {
+public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T> {
 
     protected abstract JedisPool getJedisPool();
 
@@ -42,15 +44,15 @@ public abstract class AbstractJedisDao<K extends Object, T extends Object> imple
         modelName = jedisModel == null ? null : jedisModel.name();
     }
 
-    private String keyToString(K key) {
-        String _key = convertKeyToString(key);
-        return modelName == null ? _key : String.format("%s.%s", modelName, _key);
+    private String keyToString(String key) {
+        return modelName == null ? key : String.format("%s.%s", modelName, key);
     }
 
     protected T convertStringToModel(String value) throws JedisException {
         if (value == null || value.isEmpty()) {
             return null;
         }
+
         try {
             return getObjectMapper().readValue(value, modelClass);
         } catch (IOException ex) {
@@ -62,6 +64,7 @@ public abstract class AbstractJedisDao<K extends Object, T extends Object> imple
         if (value == null) {
             return null;
         }
+
         try {
             return getObjectMapper().writer().writeValueAsString(value);
         } catch (JsonProcessingException ex) {
@@ -69,21 +72,85 @@ public abstract class AbstractJedisDao<K extends Object, T extends Object> imple
         }
     }
 
-    protected String convertKeyToString(K key) {
-        return key.toString();
-    }
-
     @Override
-    public T get(K key) throws JedisException {
+    public T get(String key) throws JedisException {
         String value;
+
         try (Jedis jedis = getJedisPool().getResource()) {
             value = jedis.get(keyToString(key));
         }
+
         return convertStringToModel(value);
     }
 
     @Override
-    public void put(K key, T value) throws JedisException {
+    public Set<String> findKeys() throws JedisException {
+        if (modelName == null) {
+            throw new JedisException("This operation is not permitted for string dao");
+        }
+
+        Set<String> keys;
+
+        try (Jedis jedis = getJedisPool().getResource()) {
+            keys = jedis.keys(modelName);
+        }
+
+        Set<String> _keys = new HashSet<>();
+
+        for (String key : keys) {
+            String _key = key.substring(key.indexOf('.'));
+            _keys.add(_key);
+        }
+
+        return _keys;
+    }
+
+    @Override
+    public Map<String, T> find(String filter) throws JedisException {
+        if (modelName == null) {
+            throw new JedisException("This operation is not permitted for string dao");
+        }
+
+        Set<String> keys;
+
+        try (Jedis jedis = getJedisPool().getResource()) {
+            keys = jedis.keys(String.format("%s.%s", modelName, filter));
+
+            Map<String, T> map = new HashMap<>();
+
+            for (String key : keys) {
+
+                String _key = key.substring(key.indexOf('.'));
+                map.put(_key, convertStringToModel(jedis.get(key)));
+            }
+            return map;
+        }
+    }
+
+    @Override
+    public Map<String, T> findAll() throws JedisException {
+        if (modelName == null) {
+            throw new JedisException("This operation is not permitted for string dao");
+        }
+
+        Set<String> keys;
+
+        try (Jedis jedis = getJedisPool().getResource()) {
+            keys = jedis.keys(modelName);
+
+            Map<String, T> map = new HashMap<>();
+
+            for (String key : keys) {
+
+                String _key = key.substring(key.indexOf('.'));
+                map.put(_key, convertStringToModel(jedis.get(key)));
+            }
+            return map;
+        }
+    }
+
+    @Override
+    public void put(String key, T value) throws JedisException {
         if (value == null) {
             return;
         }
@@ -93,7 +160,7 @@ public abstract class AbstractJedisDao<K extends Object, T extends Object> imple
     }
 
     @Override
-    public void put(K key, T value, Integer expireInSeconds) throws JedisException {
+    public void put(String key, T value, Integer expireInSeconds) throws JedisException {
         if (value == null) {
             return;
         }
@@ -105,16 +172,16 @@ public abstract class AbstractJedisDao<K extends Object, T extends Object> imple
     }
 
     @Override
-    public void delete(K key) {
+    public void delete(String key) {
         try (Jedis jedis = getJedisPool().getResource()) {
             jedis.del(keyToString(key));
         }
     }
 
     @Override
-    public void deleteAll() {
+    public void deleteAll() throws JedisException {
         if (modelName == null) {
-            return;
+            throw new JedisException("This operation is not permitted for string dao");
         }
         try (Jedis jedis = getJedisPool().getResource()) {
             Set<String> keys = jedis.keys(modelName);

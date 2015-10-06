@@ -5,23 +5,30 @@
  */
 package net.lojika.jedis.dao;
 
+import java.util.Map;
+import java.util.Set;
 import net.lojika.jedis.exception.JedisException;
 
 /**
  *
  * @author Burak Amasyalı
- * @param <K>
  * @param <T>
  */
-public interface JedisDao<K extends Object, T extends Object> {
+public interface JedisDao< T extends Object> {
 
-    T get(K key) throws JedisException;
+    T get(String key) throws JedisException;
 
-    void put(K key, T value) throws JedisException;
+    Set<String> findKeys() throws JedisException;
 
-    void put(K key, T value, Integer expireInSeconds) throws JedisException;
+    Map<String, T> find(String key) throws JedisException;
 
-    void delete(K key);
+    Map<String, T> findAll() throws JedisException;
 
-    void deleteAll();
+    void put(String key, T value) throws JedisException;
+
+    void put(String key, T value, Integer expireInSeconds) throws JedisException;
+
+    void delete(String key);
+
+    void deleteAll() throws JedisException;
 }

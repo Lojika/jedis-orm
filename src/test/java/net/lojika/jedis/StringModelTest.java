@@ -100,7 +100,7 @@ public class StringModelTest extends BaseTest {
 
     }
 
-    @Test
+    @Test(expected = JedisException.class)
     public void shouldNotDeleteAllForDefaultDao() throws JedisException {
 
         String key = "myKey";
