@@ -6,7 +6,7 @@ package net.lojika.jedis;
  * and open the template in the editor.
  */
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.lojika.jedis.dao.impl.DefaultJedisDaoImpl;
+import net.lojika.jedis.dao.SampleDao;
 import net.lojika.jedis.exception.JedisException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,7 +22,21 @@ import redis.clients.jedis.JedisPool;
  */
 public class DefaultJedisDaoTest extends BaseTest {
 
+    private SampleDao sampleDao;
+
     public DefaultJedisDaoTest() {
+        this.sampleDao = new SampleDao() {
+
+            @Override
+            protected JedisPool getJedisPool() {
+                return DefaultJedisDaoTest.this.getJedisPool();
+            }
+
+            @Override
+            protected ObjectMapper getObjectMapper() {
+                return DefaultJedisDaoTest.this.getObjectMapper();
+            }
+        };
     }
 
     @BeforeClass
@@ -47,7 +61,6 @@ public class DefaultJedisDaoTest extends BaseTest {
         String key = "myKey";
         String value = "myValue";
 
-        SampleDao sampleDao = new SampleDao();
         sampleDao.put(key, value);
 
         assertEquals(value, sampleDao.get(key));
@@ -61,7 +74,6 @@ public class DefaultJedisDaoTest extends BaseTest {
         String value = "myValue";
         Integer expireInSeconds = 1;
 
-        SampleDao sampleDao = new SampleDao();
         sampleDao.put(key, value, expireInSeconds);
 
         assertEquals(value, sampleDao.get(key));
@@ -78,7 +90,6 @@ public class DefaultJedisDaoTest extends BaseTest {
         String key = "myKey";
         String value = "myValue";
 
-        SampleDao sampleDao = new SampleDao();
         sampleDao.put(key, value);
 
         assertEquals(value, sampleDao.get(key));
@@ -95,7 +106,6 @@ public class DefaultJedisDaoTest extends BaseTest {
         String key = "myKey";
         String value = "myValue";
 
-        SampleDao sampleDao = new SampleDao();
         sampleDao.put(key, value);
 
         assertEquals(value, sampleDao.get(key));
@@ -103,20 +113,6 @@ public class DefaultJedisDaoTest extends BaseTest {
         sampleDao.deleteAll();
 
         assertNotNull(sampleDao.get(key));
-
-    }
-
-    private class SampleDao extends DefaultJedisDaoImpl {
-
-        @Override
-        protected JedisPool getJedisPool() {
-            return DefaultJedisDaoTest.this.getJedisPool();
-        }
-
-        @Override
-        protected ObjectMapper getObjectMapper() {
-            return DefaultJedisDaoTest.this.getObjectMapper();
-        }
 
     }
 

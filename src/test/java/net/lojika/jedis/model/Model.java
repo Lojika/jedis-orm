@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.lojika.jedis;
+package net.lojika.jedis.model;
 
 import java.util.List;
 import net.lojika.jedis.model.JedisModel;

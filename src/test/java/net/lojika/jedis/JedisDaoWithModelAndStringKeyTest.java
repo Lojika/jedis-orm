@@ -6,11 +6,10 @@ package net.lojika.jedis;
  * and open the template in the editor.
  */
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.lojika.jedis.model.Model;
 import java.util.Arrays;
-import java.util.List;
-import net.lojika.jedis.dao.impl.AbstactJedisDao;
+import net.lojika.jedis.dao.ModelDao;
 import net.lojika.jedis.exception.JedisException;
-import net.lojika.jedis.model.JedisModel;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,7 +27,17 @@ public class JedisDaoWithModelAndStringKeyTest extends BaseTest {
     private ModelDao modelDao;
 
     public JedisDaoWithModelAndStringKeyTest() {
-        this.modelDao = new ModelDao();
+        this.modelDao = new ModelDao() {
+            @Override
+            protected JedisPool getJedisPool() {
+                return JedisDaoWithModelAndStringKeyTest.this.getJedisPool();
+            }
+
+            @Override
+            protected ObjectMapper getObjectMapper() {
+                return JedisDaoWithModelAndStringKeyTest.this.getObjectMapper();
+            }
+        };
     }
 
     @BeforeClass
@@ -124,25 +133,5 @@ public class JedisDaoWithModelAndStringKeyTest extends BaseTest {
         assertNull(modelDao.get(key));
 
     }
-
-    private class ModelDao extends AbstactJedisDao<String, Model> {
-
-        public ModelDao() {
-            super(Model.class);
-        }
-
-        @Override
-        protected JedisPool getJedisPool() {
-            return JedisDaoWithModelAndStringKeyTest.this.getJedisPool();
-        }
-
-        @Override
-        protected ObjectMapper getObjectMapper() {
-            return JedisDaoWithModelAndStringKeyTest.this.getObjectMapper();
-        }
-
-    }
-
-   
 
 }
