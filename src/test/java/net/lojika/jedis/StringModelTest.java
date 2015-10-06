@@ -6,8 +6,6 @@ package net.lojika.jedis;
  * and open the template in the editor.
  */
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.lojika.jedis.dao.StringModelDao;

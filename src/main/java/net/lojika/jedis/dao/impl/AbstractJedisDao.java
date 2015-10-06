@@ -25,13 +25,11 @@ import redis.clients.jedis.JedisPool;
  */
 public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T> {
 
+    private static final String DEFAULT_MODEL_NAME = "DEFAULT";
+
     private final Class<T> modelClass;
 
     private final String modelName;
-
-    protected abstract JedisPool getJedisPool();
-
-    protected abstract ObjectMapper getObjectMapper();
 
     public AbstractJedisDao(Class<T> modelClass) {
         this.modelClass = modelClass;
@@ -42,12 +40,16 @@ public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T
             throw new RuntimeException("Model must be Sring or JedisModel");
         }
 
-        modelName = jedisModel == null ? "DEFAULT" : jedisModel.name();
+        modelName = jedisModel == null ? DEFAULT_MODEL_NAME : jedisModel.name();
+
+        if (modelName.indexOf('.') >= 0) {
+            throw new RuntimeException("Model name can not contain '.'");
+        }
     }
 
-    private String keyToString(String key) {
-        return modelName == null ? key : String.format("%s.%s", modelName, key);
-    }
+    protected abstract JedisPool getJedisPool();
+
+    protected abstract ObjectMapper getObjectMapper();
 
     protected T convertStringToModel(String value) throws JedisException {
         if (value == null || value.isEmpty()) {
@@ -71,6 +73,10 @@ public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T
         } catch (JsonProcessingException ex) {
             throw new JedisException(ex);
         }
+    }
+
+    private String keyToString(String key) {
+        return modelName == null ? key : String.format("%s.%s", modelName, key);
     }
 
     @Override
