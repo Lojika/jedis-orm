@@ -6,7 +6,6 @@
 package net.lojika.jedis.model;
 
 import java.util.List;
-import net.lojika.jedis.model.JedisModel;
 
 /**
  *
