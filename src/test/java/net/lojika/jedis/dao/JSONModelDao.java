@@ -6,16 +6,16 @@
 package net.lojika.jedis.dao;
 
 import net.lojika.jedis.dao.impl.AbstractJedisDao;
-import net.lojika.jedis.model.Model;
+import net.lojika.jedis.model.JSONModel;
 
 /**
  *
  * @author bamasyali
  */
-public abstract class ModelDao extends AbstractJedisDao<String, Model> {
+public abstract class JSONModelDao extends AbstractJedisDao<String, JSONModel> {
 
-    public ModelDao() {
-        super(Model.class);
+    public JSONModelDao() {
+        super(JSONModel.class);
     }
 
 }

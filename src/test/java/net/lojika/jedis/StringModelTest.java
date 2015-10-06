@@ -6,7 +6,7 @@ package net.lojika.jedis;
  * and open the template in the editor.
  */
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.lojika.jedis.dao.SampleDao;
+import net.lojika.jedis.dao.StringModelDao;
 import net.lojika.jedis.exception.JedisException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,10 +22,10 @@ import redis.clients.jedis.JedisPool;
  */
 public class StringModelTest extends BaseTest {
 
-    private final SampleDao sampleDao;
+    private final StringModelDao sampleDao;
 
     public StringModelTest() {
-        this.sampleDao = new SampleDao() {
+        this.sampleDao = new StringModelDao() {
 
             @Override
             protected JedisPool getJedisPool() {

@@ -11,9 +11,9 @@ import net.lojika.jedis.dao.impl.AbstractJedisDao;
  *
  * @author bamasyali
  */
-public abstract class SampleDao extends AbstractJedisDao<String, String> {
+public abstract class StringModelDao extends AbstractJedisDao<String, String> {
 
-    public SampleDao() {
+    public StringModelDao() {
         super(String.class);
     }
 

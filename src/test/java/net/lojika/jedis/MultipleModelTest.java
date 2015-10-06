@@ -7,10 +7,10 @@ package net.lojika.jedis;
  */
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
-import net.lojika.jedis.dao.ModelDao;
-import net.lojika.jedis.dao.SampleDao;
+import net.lojika.jedis.dao.JSONModelDao;
+import net.lojika.jedis.dao.StringModelDao;
 import net.lojika.jedis.exception.JedisException;
-import net.lojika.jedis.model.Model;
+import net.lojika.jedis.model.JSONModel;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,11 +25,11 @@ import redis.clients.jedis.JedisPool;
  */
 public class MultipleModelTest extends BaseTest {
 
-    private final SampleDao sampleDao;
-    private final ModelDao modelDao;
+    private final StringModelDao sampleDao;
+    private final JSONModelDao modelDao;
 
     public MultipleModelTest() {
-        this.sampleDao = new SampleDao() {
+        this.sampleDao = new StringModelDao() {
 
             @Override
             protected JedisPool getJedisPool() {
@@ -41,7 +41,7 @@ public class MultipleModelTest extends BaseTest {
                 return MultipleModelTest.this.getObjectMapper();
             }
         };
-        this.modelDao = new ModelDao() {
+        this.modelDao = new JSONModelDao() {
             @Override
             protected JedisPool getJedisPool() {
                 return MultipleModelTest.this.getJedisPool();
@@ -84,14 +84,14 @@ public class MultipleModelTest extends BaseTest {
 
         {
             String key = "myKey";
-            Model model = new Model();
+            JSONModel model = new JSONModel();
             model.setName("name");
             model.setSurname("surname");
             model.setTagList(Arrays.asList("a", "b", "c"));
 
             modelDao.put(key, model);
 
-            Model _model = modelDao.get(key);
+            JSONModel _model = modelDao.get(key);
 
             assertEquals("name", _model.getName());
             assertEquals("surname", _model.getSurname());
@@ -121,14 +121,14 @@ public class MultipleModelTest extends BaseTest {
 
         {
             String key = "myKey";
-            Model model = new Model();
+            JSONModel model = new JSONModel();
             model.setName("name");
             model.setSurname("surname");
             model.setTagList(Arrays.asList("a", "b", "c"));
 
             modelDao.put(key, model);
 
-            Model _model = modelDao.get(key);
+            JSONModel _model = modelDao.get(key);
 
             assertEquals("name", _model.getName());
             assertEquals("surname", _model.getSurname());
@@ -166,7 +166,7 @@ public class MultipleModelTest extends BaseTest {
 
         {
             String key = "myKey";
-            Model model = new Model();
+            JSONModel model = new JSONModel();
             model.setName("name");
             model.setSurname("surname");
             model.setTagList(Arrays.asList("a", "b", "c"));

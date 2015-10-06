@@ -6,9 +6,9 @@ package net.lojika.jedis;
  * and open the template in the editor.
  */
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.lojika.jedis.model.Model;
+import net.lojika.jedis.model.JSONModel;
 import java.util.Arrays;
-import net.lojika.jedis.dao.ModelDao;
+import net.lojika.jedis.dao.JSONModelDao;
 import net.lojika.jedis.exception.JedisException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,10 +24,10 @@ import redis.clients.jedis.JedisPool;
  */
 public class JSONModelTest extends BaseTest {
 
-    private final ModelDao modelDao;
+    private final JSONModelDao modelDao;
 
     public JSONModelTest() {
-        this.modelDao = new ModelDao() {
+        this.modelDao = new JSONModelDao() {
             @Override
             protected JedisPool getJedisPool() {
                 return JSONModelTest.this.getJedisPool();
@@ -61,14 +61,14 @@ public class JSONModelTest extends BaseTest {
     public void shouldInsertJedis() throws JedisException {
 
         String key = "myKey";
-        Model model = new Model();
+        JSONModel model = new JSONModel();
         model.setName("name");
         model.setSurname("surname");
         model.setTagList(Arrays.asList("a", "b", "c"));
 
         modelDao.put(key, model);
 
-        Model _model = modelDao.get(key);
+        JSONModel _model = modelDao.get(key);
 
         assertEquals("name", _model.getName());
         assertEquals("surname", _model.getSurname());
@@ -80,7 +80,7 @@ public class JSONModelTest extends BaseTest {
     public void shouldInsertJedisWithExpire() throws JedisException, InterruptedException {
 
         String key = "myKey";
-        Model model = new Model();
+        JSONModel model = new JSONModel();
         model.setName("name");
         model.setSurname("surname");
         model.setTagList(Arrays.asList("a", "b", "c"));
@@ -100,7 +100,7 @@ public class JSONModelTest extends BaseTest {
     public void shouldDeleteFromJedis() throws JedisException {
 
         String key = "myKey";
-        Model model = new Model();
+        JSONModel model = new JSONModel();
         model.setName("name");
         model.setSurname("surname");
         model.setTagList(Arrays.asList("a", "b", "c"));
@@ -119,7 +119,7 @@ public class JSONModelTest extends BaseTest {
     public void shouldDeleteAllForDefaultDao() throws JedisException {
 
         String key = "myKey";
-        Model model = new Model();
+        JSONModel model = new JSONModel();
         model.setName("name");
         model.setSurname("surname");
         model.setTagList(Arrays.asList("a", "b", "c"));

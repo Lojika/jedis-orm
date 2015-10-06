@@ -13,13 +13,13 @@ import net.lojika.jedis.model.JedisModel;
  * @author bamasyali
  */
 @JedisModel(name = "myModel")
-public class Model {
+public class JSONModel {
 
     private String name;
     private String surname;
     private List<String> tagList;
 
-    public Model() {
+    public JSONModel() {
     }
 
     public String getName() {
