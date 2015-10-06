@@ -16,17 +16,21 @@ import net.lojika.jedis.exception.JedisException;
  */
 public interface JedisDao< T extends Object> {
 
-    T get(String key) throws JedisException;
+    T findOne(String key) throws JedisException;
 
-    Set<String> findKeys() throws JedisException;
-
-    Map<String, T> find(String key) throws JedisException;
+    Map<String, T> find(String filter) throws JedisException;
 
     Map<String, T> findAll() throws JedisException;
 
-    void put(String key, T value) throws JedisException;
+    Integer getCount(String filter) throws JedisException;
 
-    void put(String key, T value, Integer expireInSeconds) throws JedisException;
+    Integer getCount() throws JedisException;
+
+    Set<String> findKeys() throws JedisException;
+
+    void saveOrUpdate(String key, T value) throws JedisException;
+
+    void saveOrUpdate(String key, T value, Integer expireInSeconds) throws JedisException;
 
     void delete(String key);
 

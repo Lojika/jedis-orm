@@ -77,9 +77,9 @@ public class MultipleModelTest extends BaseTest {
             String key = "myKey";
             String value = "myValue";
 
-            sampleDao.put(key, value);
+            sampleDao.saveOrUpdate(key, value);
 
-            assertEquals(value, sampleDao.get(key));
+            assertEquals(value, sampleDao.findOne(key));
         }
 
         {
@@ -89,9 +89,9 @@ public class MultipleModelTest extends BaseTest {
             model.setSurname("surname");
             model.setTagList(Arrays.asList("a", "b", "c"));
 
-            modelDao.put(key, model);
+            modelDao.saveOrUpdate(key, model);
 
-            JSONModel _model = modelDao.get(key);
+            JSONModel _model = modelDao.findOne(key);
 
             assertEquals("name", _model.getName());
             assertEquals("surname", _model.getSurname());
@@ -102,7 +102,7 @@ public class MultipleModelTest extends BaseTest {
             String key = "myKey";
             String value = "myValue";
 
-            assertEquals(value, sampleDao.get(key));
+            assertEquals(value, sampleDao.findOne(key));
         }
 
     }
@@ -114,9 +114,9 @@ public class MultipleModelTest extends BaseTest {
             String key = "myKey";
             String value = "myValue";
 
-            sampleDao.put(key, value);
+            sampleDao.saveOrUpdate(key, value);
 
-            assertEquals(value, sampleDao.get(key));
+            assertEquals(value, sampleDao.findOne(key));
         }
 
         {
@@ -126,9 +126,9 @@ public class MultipleModelTest extends BaseTest {
             model.setSurname("surname");
             model.setTagList(Arrays.asList("a", "b", "c"));
 
-            modelDao.put(key, model);
+            modelDao.saveOrUpdate(key, model);
 
-            JSONModel _model = modelDao.get(key);
+            JSONModel _model = modelDao.findOne(key);
 
             assertEquals("name", _model.getName());
             assertEquals("surname", _model.getSurname());
@@ -136,14 +136,14 @@ public class MultipleModelTest extends BaseTest {
 
             modelDao.delete(key);
 
-            assertNull(modelDao.get(key));
+            assertNull(modelDao.findOne(key));
         }
 
         {
             String key = "myKey";
             String value = "myValue";
 
-            assertEquals(value, sampleDao.get(key));
+            assertEquals(value, sampleDao.findOne(key));
         }
 
     }
@@ -155,9 +155,9 @@ public class MultipleModelTest extends BaseTest {
             String key = "myKey";
             String value = "myValue";
 
-            sampleDao.put(key, value);
+            sampleDao.saveOrUpdate(key, value);
 
-            assertEquals(value, sampleDao.get(key));
+            assertEquals(value, sampleDao.findOne(key));
         }
 
         {
@@ -167,19 +167,19 @@ public class MultipleModelTest extends BaseTest {
             model.setSurname("surname");
             model.setTagList(Arrays.asList("a", "b", "c"));
 
-            modelDao.put(key, model);
+            modelDao.saveOrUpdate(key, model);
 
-            assertEquals("name", modelDao.get(key).getName());
+            assertEquals("name", modelDao.findOne(key).getName());
 
             modelDao.deleteAll();
 
-            assertNull(modelDao.get(key));
+            assertNull(modelDao.findOne(key));
         }
 
         {
             String key = "myKey";
 
-            assertNotNull(sampleDao.get(key));
+            assertNotNull(sampleDao.findOne(key));
         }
 
     }

@@ -61,9 +61,9 @@ public class StringModelTest extends BaseTest {
         String key = "myKey";
         String value = "myValue";
 
-        sampleDao.put(key, value);
+        sampleDao.saveOrUpdate(key, value);
 
-        assertEquals(value, sampleDao.get(key));
+        assertEquals(value, sampleDao.findOne(key));
 
     }
 
@@ -74,13 +74,13 @@ public class StringModelTest extends BaseTest {
         String value = "myValue";
         Integer expireInSeconds = 1;
 
-        sampleDao.put(key, value, expireInSeconds);
+        sampleDao.saveOrUpdate(key, value, expireInSeconds);
 
-        assertEquals(value, sampleDao.get(key));
+        assertEquals(value, sampleDao.findOne(key));
 
         Thread.sleep(2000);
 
-        assertNull(sampleDao.get(key));
+        assertNull(sampleDao.findOne(key));
 
     }
 
@@ -90,13 +90,13 @@ public class StringModelTest extends BaseTest {
         String key = "myKey";
         String value = "myValue";
 
-        sampleDao.put(key, value);
+        sampleDao.saveOrUpdate(key, value);
 
-        assertEquals(value, sampleDao.get(key));
+        assertEquals(value, sampleDao.findOne(key));
 
         sampleDao.delete(key);
 
-        assertNull(sampleDao.get(key));
+        assertNull(sampleDao.findOne(key));
 
     }
 
@@ -106,13 +106,13 @@ public class StringModelTest extends BaseTest {
         String key = "myKey";
         String value = "myValue";
 
-        sampleDao.put(key, value);
+        sampleDao.saveOrUpdate(key, value);
 
-        assertEquals(value, sampleDao.get(key));
+        assertEquals(value, sampleDao.findOne(key));
 
         sampleDao.deleteAll();
 
-        assertNotNull(sampleDao.get(key));
+        assertNotNull(sampleDao.findOne(key));
 
     }
 

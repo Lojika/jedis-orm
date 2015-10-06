@@ -25,12 +25,13 @@ import redis.clients.jedis.JedisPool;
  */
 public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T> {
 
+    private final Class<T> modelClass;
+
+    private final String modelName;
+
     protected abstract JedisPool getJedisPool();
 
     protected abstract ObjectMapper getObjectMapper();
-
-    private final Class<T> modelClass;
-    private final String modelName;
 
     public AbstractJedisDao(Class<T> modelClass) {
         this.modelClass = modelClass;
@@ -73,7 +74,7 @@ public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T
     }
 
     @Override
-    public T get(String key) throws JedisException {
+    public T findOne(String key) throws JedisException {
         String value;
 
         try (Jedis jedis = getJedisPool().getResource()) {
@@ -81,6 +82,76 @@ public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T
         }
 
         return convertStringToModel(value);
+    }
+
+    @Override
+    public Map<String, T> find(String filter) throws JedisException {
+        if (modelName == null) {
+            throw new JedisException("This operation is not permitted for string dao");
+        }
+
+        Set<String> keys;
+
+        try (Jedis jedis = getJedisPool().getResource()) {
+            keys = jedis.keys(String.format("%s.%s", modelName, filter));
+
+            Map<String, T> map = new HashMap<>();
+
+            for (String key : keys) {
+                String _key = key.substring(key.indexOf('.'));
+                map.put(_key, convertStringToModel(jedis.get(key)));
+            }
+            return map;
+        }
+    }
+
+    @Override
+    public Map<String, T> findAll() throws JedisException {
+        if (modelName == null) {
+            throw new JedisException("This operation is not permitted for string dao");
+        }
+
+        Set<String> keys;
+
+        try (Jedis jedis = getJedisPool().getResource()) {
+            keys = jedis.keys(modelName);
+
+            Map<String, T> map = new HashMap<>();
+
+            for (String key : keys) {
+                String _key = key.substring(key.indexOf('.'));
+                map.put(_key, convertStringToModel(jedis.get(key)));
+            }
+            return map;
+        }
+    }
+
+    @Override
+    public Integer getCount(String filter) throws JedisException {
+        if (modelName == null) {
+            throw new JedisException("This operation is not permitted for string dao");
+        }
+
+        Set<String> keys;
+
+        try (Jedis jedis = getJedisPool().getResource()) {
+            keys = jedis.keys(String.format("%s.%s", modelName, filter));
+            return keys.size();
+        }
+    }
+
+    @Override
+    public Integer getCount() throws JedisException {
+        if (modelName == null) {
+            throw new JedisException("This operation is not permitted for string dao");
+        }
+
+        Set<String> keys;
+
+        try (Jedis jedis = getJedisPool().getResource()) {
+            keys = jedis.keys(modelName);
+            return keys.size();
+        }
     }
 
     @Override
@@ -106,65 +177,24 @@ public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T
     }
 
     @Override
-    public Map<String, T> find(String filter) throws JedisException {
-        if (modelName == null) {
-            throw new JedisException("This operation is not permitted for string dao");
-        }
-
-        Set<String> keys;
-
-        try (Jedis jedis = getJedisPool().getResource()) {
-            keys = jedis.keys(String.format("%s.%s", modelName, filter));
-
-            Map<String, T> map = new HashMap<>();
-
-            for (String key : keys) {
-
-                String _key = key.substring(key.indexOf('.'));
-                map.put(_key, convertStringToModel(jedis.get(key)));
-            }
-            return map;
-        }
-    }
-
-    @Override
-    public Map<String, T> findAll() throws JedisException {
-        if (modelName == null) {
-            throw new JedisException("This operation is not permitted for string dao");
-        }
-
-        Set<String> keys;
-
-        try (Jedis jedis = getJedisPool().getResource()) {
-            keys = jedis.keys(modelName);
-
-            Map<String, T> map = new HashMap<>();
-
-            for (String key : keys) {
-
-                String _key = key.substring(key.indexOf('.'));
-                map.put(_key, convertStringToModel(jedis.get(key)));
-            }
-            return map;
-        }
-    }
-
-    @Override
-    public void put(String key, T value) throws JedisException {
+    public void saveOrUpdate(String key, T value) throws JedisException {
         if (value == null) {
             return;
         }
+        
         try (Jedis jedis = getJedisPool().getResource()) {
             jedis.set(keyToString(key), convertModelToString(value));
         }
     }
 
     @Override
-    public void put(String key, T value, Integer expireInSeconds) throws JedisException {
+    public void saveOrUpdate(String key, T value, Integer expireInSeconds) throws JedisException {
         if (value == null) {
             return;
         }
+        
         String _key = keyToString(key);
+        
         try (Jedis jedis = getJedisPool().getResource()) {
             jedis.set(_key, convertModelToString(value));
             jedis.expire(_key, expireInSeconds);
@@ -183,6 +213,7 @@ public abstract class AbstractJedisDao< T extends Object> implements JedisDao< T
         if (modelName == null) {
             throw new JedisException("This operation is not permitted for string dao");
         }
+        
         try (Jedis jedis = getJedisPool().getResource()) {
             Set<String> keys = jedis.keys(modelName);
             for (String key : keys) {

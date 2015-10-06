@@ -66,9 +66,9 @@ public class JSONModelTest extends BaseTest {
         model.setSurname("surname");
         model.setTagList(Arrays.asList("a", "b", "c"));
 
-        modelDao.put(key, model);
+        modelDao.saveOrUpdate(key, model);
 
-        JSONModel _model = modelDao.get(key);
+        JSONModel _model = modelDao.findOne(key);
 
         assertEquals("name", _model.getName());
         assertEquals("surname", _model.getSurname());
@@ -86,13 +86,13 @@ public class JSONModelTest extends BaseTest {
         model.setTagList(Arrays.asList("a", "b", "c"));
         Integer expireInSeconds = 1;
 
-        modelDao.put(key, model, expireInSeconds);
+        modelDao.saveOrUpdate(key, model, expireInSeconds);
 
-        assertEquals("name", modelDao.get(key).getName());
+        assertEquals("name", modelDao.findOne(key).getName());
 
         Thread.sleep(2000);
 
-        assertNull(modelDao.get(key));
+        assertNull(modelDao.findOne(key));
 
     }
 
@@ -105,13 +105,13 @@ public class JSONModelTest extends BaseTest {
         model.setSurname("surname");
         model.setTagList(Arrays.asList("a", "b", "c"));
 
-        modelDao.put(key, model);
+        modelDao.saveOrUpdate(key, model);
 
-        assertEquals("name", modelDao.get(key).getName());
+        assertEquals("name", modelDao.findOne(key).getName());
 
         modelDao.delete(key);
 
-        assertNull(modelDao.get(key));
+        assertNull(modelDao.findOne(key));
 
     }
 
@@ -124,13 +124,13 @@ public class JSONModelTest extends BaseTest {
         model.setSurname("surname");
         model.setTagList(Arrays.asList("a", "b", "c"));
 
-        modelDao.put(key, model);
+        modelDao.saveOrUpdate(key, model);
 
-        assertEquals("name", modelDao.get(key).getName());
+        assertEquals("name", modelDao.findOne(key).getName());
 
         modelDao.deleteAll();
 
-        assertNull(modelDao.get(key));
+        assertNull(modelDao.findOne(key));
 
     }
 
