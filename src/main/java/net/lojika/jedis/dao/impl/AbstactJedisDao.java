@@ -33,6 +33,11 @@ public abstract class AbstactJedisDao<K extends Object, T extends Object> implem
     public AbstactJedisDao(Class<T> modelClass) {
         this.modelClass = modelClass;
         JedisModel jedisModel = modelClass.getAnnotation(JedisModel.class);
+
+        if (jedisModel == null && !modelClass.equals(String.class)) {
+            throw new RuntimeException("Model must be Sring or JedisModel");
+        }
+
         modelName = jedisModel == null ? null : jedisModel.name();
     }
 
